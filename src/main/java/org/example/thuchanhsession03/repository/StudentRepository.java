@@ -31,11 +31,17 @@ import java.util.List;
 @Repository
 public class StudentRepository {
 
-    // TODO: Khai báo List<Student> students
+    private final List<Student> students = new ArrayList<>();
 
-    // TODO: Constructor — khởi tạo dữ liệu mẫu (thông tin thành viên nhóm)
+    public StudentRepository() {
+        students.add(new Student(1, "SV001", "Nguyễn Văn A", "CNTT", 2021, 3.8, "Đang học"));
+        students.add(new Student(2, "SV002", "Trần Thị B", "CNTT", 2022, 3.5, "Tốt nghiệp"));
+        students.add(new Student(3, "SV003", "Lê Văn C", "Kinh tế", 2023, 2.5, "Bảo lưu"));
+        students.add(new Student(4, "SV004", "Phạm Thị D", "Kinh tế", 2022, 3.9, "Đang học"));
+        students.add(new Student(5, "SV005", "Hoàng Văn E", "Điện tử", 2021, 3.2, "Tốt nghiệp"));
+    }
 
-    // TODO: findAll() — trả về toàn bộ danh sách
-
-    // TODO: findById(int id) — tìm sinh viên theo ID
+    public List<Student> findAll() {
+        return new ArrayList<>(students);
+    }
 }

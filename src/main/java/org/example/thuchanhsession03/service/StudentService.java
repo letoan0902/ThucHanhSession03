@@ -50,22 +50,20 @@ import java.util.List;
 @Service
 public class StudentService {
 
-    // TODO: Inject StudentRepository (dùng @Autowired)
+    @Autowired
+    private StudentRepository studentRepository;
 
     // ===== UC-01: Danh sách + Sắp xếp =====
-    // TODO: findAll()
-    // TODO: findAllSorted(String sortBy)
-
-    // ===== UC-02: Chi tiết =====
-    // TODO: findById(int id)
-
-    // ===== UC-03: Tìm kiếm / Lọc =====
-    // TODO: search(String keyword)
-    // TODO: filterByFaculty(String faculty)
-
-    // ===== UC-04: Dashboard =====
-    // TODO: getTotalStudents()
-    // TODO: getAverageGpa()
-    // TODO: getTopStudent()
-    // TODO: getStatusCount()
+    public List<Student> findAll() {
+        return studentRepository.findAll();
+    }
+public List<Student> findAllSorted(String sortBy) {
+    List<Student> students = studentRepository.findAll();
+    if ("name".equalsIgnoreCase(sortBy)) {
+        students.sort((s1, s2) -> s1.getFullName().compareToIgnoreCase(s2.getFullName()));
+    } else if ("gpa".equalsIgnoreCase(sortBy)) {
+        students.sort((s1, s2) -> Double.compare(s2.getGpa(), s1.getGpa())); // Cao -> Thấp
+    }
+    return students;
+}
 }

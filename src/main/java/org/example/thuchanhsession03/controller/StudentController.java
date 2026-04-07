@@ -1,11 +1,14 @@
 package org.example.thuchanhsession03.controller;
 
+import org.example.thuchanhsession03.model.Student;
 import org.example.thuchanhsession03.service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.List;
 
 /**
  * ===== CONTROLLER: StudentController =====
@@ -53,14 +56,25 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 public class StudentController {
 
-    // TODO: Inject StudentService (dùng @Autowired)
+    @Autowired
+    private StudentService studentService;
 
-    // ===== UC-01 + UC-03: Danh sách + Sắp xếp + Tìm kiếm/Lọc =====
-    // TODO: @GetMapping("/students")
+    @GetMapping("/students")
+    public String listStudents(
+            @RequestParam(required = false) String sortBy,
+            Model model
+    ) {
+        List<Student> studentList;
 
-    // ===== UC-02: Chi tiết sinh viên =====
-    // TODO: @GetMapping("/students/detail")
+        if (sortBy != null && !sortBy.isEmpty()) {
+            studentList = studentService.findAllSorted(sortBy);
+        } else {
+            studentList = studentService.findAll();
+        }
 
-    // ===== UC-04: Dashboard =====
-    // TODO: @GetMapping("/dashboard")
+        model.addAttribute("studentList", studentList);
+        model.addAttribute("sortBy", sortBy);
+
+        return "student/list";
+    }
 }
