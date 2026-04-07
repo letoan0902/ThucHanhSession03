@@ -31,13 +31,17 @@ public class Student {
     private int id;
     private String fullName;
     private String studentCode;
+    private int id;
+    private String studentCode;
+    private String fullName;
     private String faculty;
     private int enrollmentYear;
     private double gpa;
     private String status;
 
 
-    // TODO: Constructor mặc định
+    public Student() {
+    }
 
     public Student() {
     }
@@ -55,6 +59,16 @@ public class Student {
     }
 
     // TODO: Getter & Setter cho tất cả thuộc tính
+
+    public Student(int id, String studentCode, String fullName, String faculty, int enrollmentYear, double gpa, String status) {
+        this.id = id;
+        this.studentCode = studentCode;
+        this.fullName = fullName;
+        this.faculty = faculty;
+        this.enrollmentYear = enrollmentYear;
+        this.gpa = gpa;
+        this.status = status;
+    }
 
     public int getId() {
         return id;
@@ -78,6 +92,14 @@ public class Student {
 
     public void setStudentCode(String studentCode) {
         this.studentCode = studentCode;
+    }
+
+    public String getFullName() {
+        return fullName;
+    }
+
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
     }
 
     public String getFaculty() {
