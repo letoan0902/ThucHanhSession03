@@ -56,8 +56,9 @@ public class StudentService {
     // TODO: findAll()
     // TODO: findAllSorted(String sortBy)
 
-    // ===== UC-02: Chi tiết =====
-    // TODO: findById(int id)
+    public Student findById(String id) {
+        return studentRepository.findById(id);
+    }
 
     // ===== UC-03: Tìm kiếm / Lọc =====
     // TODO: search(String keyword)

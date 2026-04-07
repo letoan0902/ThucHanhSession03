@@ -53,14 +53,20 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 public class StudentController {
 
-    // TODO: Inject StudentService (dùng @Autowired)
+    @Autowired
+    private StudentService studentService;
 
     // ===== UC-01 + UC-03: Danh sách + Sắp xếp + Tìm kiếm/Lọc =====
-    // TODO: @GetMapping("/students")
+    // Code của UC-01 sẽ ở đây...
 
-    // ===== UC-02: Chi tiết sinh viên =====
-    // TODO: @GetMapping("/students/detail")
+    // ===== UC-02: Chi tiết sinh viên (Phần của bạn) =====
+    @GetMapping("/students/detail")
+    public String getStudentDetail(@RequestParam("id") String id, Model model) {
+        Student student = studentService.findById(id);
+        model.addAttribute("student", student);
+        return "student/detail";
+    }
 
     // ===== UC-04: Dashboard =====
-    // TODO: @GetMapping("/dashboard")
+    // Code của UC-04 sẽ ở đây...
 }

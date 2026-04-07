@@ -35,7 +35,12 @@ public class StudentRepository {
 
     // TODO: Constructor — khởi tạo dữ liệu mẫu (thông tin thành viên nhóm)
 
-    // TODO: findAll() — trả về toàn bộ danh sách
+    public Student findById(int id) {
+        return students.stream()
+                .filter(s -> s.getId() == id)
+                .findFirst()
+                .orElse(null);
+    }
 
     // TODO: findById(int id) — tìm sinh viên theo ID
 }
