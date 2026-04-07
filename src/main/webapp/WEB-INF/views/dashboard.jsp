@@ -1,63 +1,44 @@
-<%--
-    ===== VIEW: Dashboard — Báo cáo Tổng quan (UC-04) =====
-    File: /WEB-INF/views/dashboard.jsp
-
-    NGƯỜI PHỤ TRÁCH: Phạm Phương Anh
-
-    DỮ LIỆU NHẬN TỪ CONTROLLER (qua Model):
-      - ${totalStudents}  → int tổng số sinh viên
-      - ${averageGpa}     → double GPA trung bình
-      - ${topStudent}     → Object Student (thủ khoa - GPA cao nhất)
-      - ${statusCount}    → Map<String, Long> số lượng theo trạng thái
-        Ví dụ: {"Đang học": 3, "Bảo lưu": 1, "Tốt nghiệp": 2}
-
-    YÊU CẦU HIỂN THỊ:
-    1. Tổng số sinh viên trong nhóm
-    2. GPA trung bình (format 2 chữ số thập phân):
-       <fmt:formatNumber value="${averageGpa}" maxFractionDigits="2"/>
-    3. Thủ khoa: Tên + GPA của sinh viên có điểm cao nhất
-    4. Tỷ lệ % theo trạng thái (tính: count / total * 100):
-       <fmt:formatNumber value="${phanTram}" type="percent"/>
-    5. Link quay về danh sách: /students
-
-    TAGLIB CẦN KHAI BÁO:
-      <%@ taglib prefix="c" uri="jakarta.tags.core" %>
-      <%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
---%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
 <html>
 <head>
-    <title>Báo cáo tổng quan</title>
+    <title>StudentHub - Báo cáo Tổng quan</title>
     <style>
+        body { font-family: Arial, sans-serif; margin: 40px; background-color: #f4f7f6; }
+        h1 { color: #333; }
         .card {
+            background: #fff;
             border: 1px solid #ccc;
             padding: 15px; margin: 10px 0;
             border-radius: 8px;
-            font-family: Arial, sans-serif;
         }
         .highlight {
             background-color: #f0f8ff;
-            border-left: 5px solid #007bff; }
-        .status-item {
-            margin-bottom: 5px; }
+            border-left: 5px solid #007bff;
+        }
+        .status-item { margin-bottom: 8px; }
+        .status-studying { color: green; font-weight: bold; }
+        .status-on-leave { color: orange; font-weight: bold; }
+        .status-graduated { color: blue; font-weight: bold; }
+        .btn-back { display: inline-block; margin-top: 20px; padding: 10px 15px; background-color: #6c757d; color: white; text-decoration: none; border-radius: 4px; }
+        .btn-back:hover { background-color: #5a6268; }
     </style>
 </head>
 <body>
 
-<h1>Báo cáo Tổng quan quản lý sinh viên</h1>
+<h1>📊 Báo cáo Tổng quan — StudentHub</h1>
 <hr>
 
-<%-- 1. Hiển thị tổng số sinh viên --%>
+<%-- 1. Tổng số sinh viên --%>
 <div class="card">
     <h3>Tổng số sinh viên trong nhóm</h3>
     <p>Số lượng: <strong>${totalStudents}</strong> sinh viên</p>
 </div>
 
-<%-- 2. Hiển thị GPA trung bình (dùng fmt:formatNumber) --%>
+<%-- 2. GPA trung bình --%>
 <div class="card">
-    <h3>GPA Trung bình toàn hệ thống</h3>
+    <h3>GPA Trung bình toàn nhóm</h3>
     <p>Điểm số:
         <strong>
             <fmt:formatNumber value="${averageGpa}" maxFractionDigits="2" />
@@ -65,7 +46,7 @@
     </p>
 </div>
 
-<%-- 3. Hiển thị thông tin Thủ khoa --%>
+<%-- 3. Thủ khoa --%>
 <div class="card highlight">
     <h3>🏆 Thủ khoa của nhóm</h3>
     <c:choose>
@@ -80,27 +61,36 @@
     </c:choose>
 </div>
 
-<%-- 4. Hiển thị tỷ lệ % theo trạng thái --%>
+<%-- 4. Tỷ lệ % theo trạng thái --%>
 <div class="card">
     <h3>📈 Thống kê trạng thái học tập</h3>
-    <c:if test="${totalStudents > 0}">
-        <c:forEach var="entry" items="${statusCount}">
-            <div class="status-item">
-                <span>${entry.key}: </span>
-                <strong>
-                        <%-- Tính toán % trực tiếp trong EL: (Số lượng / Tổng) --%>
-                    <fmt:formatNumber value="${entry.value / totalStudents}" type="percent" />
-                </strong>
-                (${entry.value} sinh viên)
-            </div>
-        </c:forEach>
-    </c:if>
+    <c:forEach var="entry" items="${statusStats}">
+        <div class="status-item">
+            <c:choose>
+                <c:when test="${entry.key == 'Đang học'}">
+                    <span class="status-studying">${entry.key}:</span>
+                </c:when>
+                <c:when test="${entry.key == 'Bảo lưu'}">
+                    <span class="status-on-leave">${entry.key}:</span>
+                </c:when>
+                <c:when test="${entry.key == 'Tốt nghiệp'}">
+                    <span class="status-graduated">${entry.key}:</span>
+                </c:when>
+                <c:otherwise>
+                    <span>${entry.key}:</span>
+                </c:otherwise>
+            </c:choose>
+            <strong>
+                <fmt:formatNumber value="${entry.value}" maxFractionDigits="1" />%
+            </strong>
+        </div>
+    </c:forEach>
 </div>
 
 <%-- 5. Link quay về danh sách --%>
-<div style="margin-top: 20px;">
-    <a href="${pageContext.request.contextPath}/students">⬅️ Quay lại danh sách sinh viên</a>
-</div>
+<a href="${pageContext.request.contextPath}/students" class="btn-back">
+    ⬅️ Quay lại danh sách sinh viên
+</a>
 
 </body>
 </html>

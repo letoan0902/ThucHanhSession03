@@ -12,44 +12,60 @@ import java.util.stream.Collectors;
 
 @Service
 public class StudentService {
-    public StudentRepository studentRepository;
 
     @Autowired
     private StudentRepository studentRepository;
 
     // ===== UC-01: Danh sách + Sắp xếp =====
+
     public List<Student> findAll() {
         return studentRepository.findAll();
     }
-public List<Student> findAllSorted(String sortBy) {
-    List<Student> students = studentRepository.findAll();
-    if ("name".equalsIgnoreCase(sortBy)) {
-        students.sort((s1, s2) -> s1.getFullName().compareToIgnoreCase(s2.getFullName()));
-    } else if ("gpa".equalsIgnoreCase(sortBy)) {
-        students.sort((s1, s2) -> Double.compare(s2.getGpa(), s1.getGpa())); // Cao -> Thấp
-    }
-    return students;
-}
-}
-    // TODO: findAll()
-    // TODO: findAllSorted(String sortBy)
 
-    public Student findById(String id) {
+    public List<Student> findAllSorted(String sortBy) {
+        List<Student> students = studentRepository.findAll();
+        if ("name".equalsIgnoreCase(sortBy)) {
+            students.sort((s1, s2) -> s1.getFullName().compareToIgnoreCase(s2.getFullName()));
+        } else if ("gpa".equalsIgnoreCase(sortBy)) {
+            students.sort((s1, s2) -> Double.compare(s2.getGpa(), s1.getGpa())); // Cao -> Thấp
+        }
+        return students;
+    }
+
+    // ===== UC-02: Chi tiết sinh viên =====
+
+    public Student findById(int id) {
         return studentRepository.findById(id);
     }
-    @Autowired
-    private StudentRepository studentRepository;
 
     // ===== UC-03: Tìm kiếm / Lọc =====
-    // TODO: search(String keyword)
-    // TODO: filterByFaculty(String faculty)
+
+    public List<Student> search(String keyword) {
+        List<Student> allStudents = studentRepository.findAll();
+        if (keyword == null || keyword.trim().isEmpty()) {
+            return allStudents;
+        }
+        return allStudents.stream()
+                .filter(s -> s.getFullName().toLowerCase().contains(keyword.toLowerCase()))
+                .collect(Collectors.toList());
+    }
+
+    public List<Student> filterByFaculty(String faculty) {
+        List<Student> allStudents = studentRepository.findAll();
+        if (faculty == null || faculty.trim().isEmpty()) {
+            return allStudents;
+        }
+        return allStudents.stream()
+                .filter(s -> s.getFaculty().equalsIgnoreCase(faculty))
+                .collect(Collectors.toList());
+    }
 
     // ===== UC-04: Dashboard =====
-    // TODO: getTotalStudents()
+
     public int getTotalStudents() {
         return studentRepository.findAll().size();
     }
-    // TODO: getAverageGpa()
+
     public double getAverageGpa() {
         List<Student> list = studentRepository.findAll();
         if (list.isEmpty()) return 0.0;
@@ -61,7 +77,6 @@ public List<Student> findAllSorted(String sortBy) {
         return sum / list.size();
     }
 
-    // TODO: getTopStudent()
     public Student getTopStudent() {
         List<Student> list = studentRepository.findAll();
         if (list.isEmpty()) return null;
@@ -75,12 +90,10 @@ public List<Student> findAllSorted(String sortBy) {
         return top;
     }
 
-
-    // TODO: getStatusCount()
     public Map<String, Double> getStatusPercentages() {
         List<Student> studentList = studentRepository.findAll();
         Map<String, Double> stats = new HashMap<>();
-        if (studentList.isEmpty()){
+        if (studentList.isEmpty()) {
             return stats;
         }
 
@@ -94,31 +107,10 @@ public List<Student> findAllSorted(String sortBy) {
             }
         }
 
-        // Tính toán phần trăm
-        stats.put("Active", (active * 100.0) / total);
-        stats.put("Reserved", (reserved * 100.0) / total);
-        stats.put("Graduated", (graduated * 100.0) / total);
+        stats.put("Đang học", (active * 100.0) / total);
+        stats.put("Bảo lưu", (reserved * 100.0) / total);
+        stats.put("Tốt nghiệp", (graduated * 100.0) / total);
 
         return stats;
-    public List<Student> search(String keyword) {
-        List<Student> allStudents = studentRepository.findAll();
-        if (keyword == null || keyword.trim().isEmpty()) {
-            return allStudents;
-        }
-        return allStudents.stream()
-                .filter(s -> s.getFullName().toLowerCase().contains(keyword.toLowerCase()))
-                .collect(Collectors.toList());
-    }
-    public List<Student> filterByFaculty(String faculty) {
-        List<Student> allStudents = studentRepository.findAll();
-
-        if (faculty == null || faculty.trim().isEmpty()) {
-            return allStudents;
-        }
-
-        // Thực hiện lọc theo khoa (so sánh chính xác)
-        return allStudents.stream()
-                .filter(s -> s.getFaculty().equalsIgnoreCase(faculty))
-                .collect(Collectors.toList());
     }
 }

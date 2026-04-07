@@ -1,34 +1,3 @@
-<%--
-    ===== VIEW: Danh sách Sinh viên (UC-01 + UC-03) =====
-    File: /WEB-INF/views/student/list.jsp
-
-    NGƯỜI PHỤ TRÁCH: [Thành viên phụ trách UC-01 & UC-03]
-
-    DỮ LIỆU NHẬN TỪ CONTROLLER (qua Model):
-      - ${studentList}  → List<Student> danh sách sinh viên
-      - ${totalCount}   → int tổng số kết quả
-      - ${search}       → String từ khóa tìm kiếm (có thể null)
-      - ${faculty}      → String khoa đang lọc (có thể null)
-      - ${sortBy}       → String tiêu chí sắp xếp hiện tại (có thể null)
-
-    YÊU CẦU HIỂN THỊ:
-    1. Bảng có cột: STT (tự động), Mã SV, Họ tên, Khoa, Năm nhập học, GPA, Trạng thái
-    2. STT dùng varStatus.count trong <c:forEach>
-    3. Tiêu đề cột "Họ tên" và "GPA" là link sắp xếp:
-       - <a href="<c:url value='/students'><c:param name='sortBy' value='name'/></c:url>">Họ tên</a>
-       - <a href="<c:url value='/students'><c:param name='sortBy' value='gpa'/></c:url>">GPA</a>
-    4. Màu trạng thái (dùng <c:choose>):
-       - "Đang học"    → color: green
-       - "Bảo lưu"    → color: orange
-       - "Tốt nghiệp" → color: blue
-    5. Cột "Họ tên" là link đến chi tiết: /students/detail?id=...
-    6. Nếu có search hoặc faculty → hiển thị "Tìm thấy [N] sinh viên phù hợp"
-    7. Link đến Dashboard: /dashboard
-
-    TAGLIB CẦN KHAI BÁO:
-      <%@ taglib prefix="c" uri="jakarta.tags.core" %>
-      <%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
---%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
@@ -36,78 +5,28 @@
 <head>
     <title>StudentHub - Danh sách Sinh viên</title>
     <style>
+        body { font-family: Arial, sans-serif; margin: 40px; background-color: #f4f7f6; }
+        h1 { color: #333; }
         .status-studying { color: green; font-weight: bold; }
         .status-on-leave { color: orange; font-weight: bold; }
         .status-graduated { color: blue; font-weight: bold; }
         table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
         th { background-color: #f2f2f2; }
-        .btn-dashboard { margin-bottom: 20px; display: inline-block; padding: 10px 15px; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px; }
+        th a { text-decoration: none; color: #007bff; }
+        th a:hover { text-decoration: underline; }
+        .search-info { background-color: #e7f3fe; padding: 10px; margin-bottom: 15px; border-left: 6px solid #2196F3; }
+        .btn-dashboard { display: inline-block; padding: 10px 15px; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px; margin-bottom: 20px; }
+        .btn-dashboard:hover { background-color: #0056b3; }
     </style>
 </head>
 <body>
 
     <h1>Hệ thống Quản lý Sinh viên - StudentHub</h1>
 
-    <table>
-        <thead>
-            <tr>
-                <th>STT</th>
-                <th>Mã SV</th>
-                <th>
-                    <a href="<c:url value='/students'><c:param name='sortBy' value='name'/></c:url>">Họ tên</a>
-                </th>
-                <th>Khoa</th>
-                <th>Năm nhập học</th>
-                <th>
-                    <a href="<c:url value='/students'><c:param name='sortBy' value='gpa'/></c:url>">GPA</a>
-                </th>
-                <th>Trạng thái</th>
-            </tr>
-        </thead>
-        <tbody>
-            <c:forEach items="${studentList}" var="student" varStatus="status">
-                <tr>
-                    <td>${status.count}</td>
-                    <td>${student.studentCode}</td>
-                    <td>${student.fullName}</td>
-                    <td>${student.faculty}</td>
-                    <td>${student.enrollmentYear}</td>
-                    <td>${student.gpa}</td>
-                    <td>
-                        <c:choose>
-                            <c:when test="${student.status == 'Đang học'}">
-                                <span class="status-studying">Đang học</span>
-                            </c:when>
-                            <c:when test="${student.status == 'Bảo lưu'}">
-                                <span class="status-on-leave">Bảo lưu</span>
-                            </c:when>
-                            <c:when test="${student.status == 'Tốt nghiệp'}">
-                                <span class="status-graduated">Tốt nghiệp</span>
-                            </c:when>
-                            <c:otherwise>
-                                ${student.status}
-                            </c:otherwise>
-                        </c:choose>
-                    </td>
-                </tr>
-            </c:forEach>
-        </tbody>
-    </table>
-    <%-- TODO: Tạo bảng danh sách sinh viên với <c:forEach> --%>
-
-    <%-- TODO: Link sắp xếp trên tiêu đề cột --%>
-
-    <%-- TODO: Màu trạng thái với <c:choose> --%>
-
-    <%-- TODO: Link đến chi tiết sinh viên --%>
-
-    <%-- TODO: Link đến Dashboard --%>
-    <h2>Hệ thống Quản lý Sinh viên - StudentHub</h2>
-
     <%-- UC-03: Hiển thị thông báo tìm kiếm nếu có search/faculty --%>
     <c:if test="${not empty search or not empty faculty}">
-        <div style="background-color: #e7f3fe; padding: 10px; margin-bottom: 15px; border-left: 6px solid #2196F3;">
+        <div class="search-info">
             <p>Kết quả lọc cho:
                 <strong>${not empty search ? 'Tên: ' : ''}${search}</strong>
                 <strong>${not empty faculty ? ' Khoa: ' : ''}${faculty}</strong>
@@ -117,23 +36,22 @@
         </div>
     </c:if>
 
-    <%-- TODO: Link đến Dashboard --%>
-    <p><a href="<c:url value='/dashboard'/>">Xem Dashboard Thống kê</a></p>
+    <%-- Link đến Dashboard --%>
+    <a href="<c:url value='/dashboard'/>" class="btn-dashboard">📊 Xem Dashboard Thống kê</a>
 
-    <%-- TODO: Tạo bảng danh sách sinh viên với <c:forEach> --%>
-    <table border="1" cellpadding="10" cellspacing="0" style="width: 100%; border-collapse: collapse;">
+    <%-- Bảng danh sách sinh viên --%>
+    <table>
         <thead>
-        <tr style="background-color: #f2f2f2;">
+        <tr>
             <th>STT</th>
             <th>Mã SV</th>
-            <%-- UC-01: Link sắp xếp trên tiêu đề cột --%>
             <th>
-                <a href="<c:url value='/students'><c:param name='sortBy' value='name'/></c:url>">Họ tên (A-Z)</a>
+                <a href="<c:url value='/students'><c:param name='sortBy' value='name'/></c:url>">Họ tên ▲</a>
             </th>
             <th>Khoa</th>
             <th>Năm nhập học</th>
             <th>
-                <a href="<c:url value='/students'><c:param name='sortBy' value='gpa'/></c:url>">GPA (Cao-Thấp)</a>
+                <a href="<c:url value='/students'><c:param name='sortBy' value='gpa'/></c:url>">GPA ▼</a>
             </th>
             <th>Trạng thái</th>
         </tr>
@@ -141,31 +59,25 @@
         <tbody>
         <c:forEach items="${studentList}" var="student" varStatus="loop">
             <tr>
-                    <%-- STT tự động dùng varStatus --%>
                 <td>${loop.count}</td>
                 <td>${student.studentCode}</td>
-
-                    <%-- UC-02: Link đến chi tiết sinh viên --%>
                 <td>
                     <a href="<c:url value='/students/detail'><c:param name='id' value='${student.id}'/></c:url>">
-                            ${student.fullName}
+                        ${student.fullName}
                     </a>
                 </td>
-
                 <td>${student.faculty}</td>
                 <td>${student.enrollmentYear}</td>
                 <td>${student.gpa}</td>
-
-                    <%-- UC-01: Màu trạng thái với <c:choose> --%>
                 <td>
                     <c:choose>
-                        <c:when test="${student.status eq 'Đang học'}">
+                        <c:when test="${student.status == 'Đang học'}">
                             <span class="status-studying">${student.status}</span>
                         </c:when>
-                        <c:when test="${student.status eq 'Bảo lưu'}">
-                            <span class="status-reserved">${student.status}</span>
+                        <c:when test="${student.status == 'Bảo lưu'}">
+                            <span class="status-on-leave">${student.status}</span>
                         </c:when>
-                        <c:when test="${student.status eq 'Tốt nghiệp'}">
+                        <c:when test="${student.status == 'Tốt nghiệp'}">
                             <span class="status-graduated">${student.status}</span>
                         </c:when>
                         <c:otherwise>
