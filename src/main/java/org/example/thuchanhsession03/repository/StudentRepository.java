@@ -20,10 +20,15 @@ public class StudentRepository {
         return students;
     }
 
+    // TODO: Constructor — khởi tạo dữ liệu mẫu (thông tin thành viên nhóm)
+
     public Student findById(int id) {
         return students.stream()
                 .filter(s -> s.getId() == id)
                 .findFirst()
                 .orElse(null);
     }
+
+    // TODO: findById(int id) — tìm sinh viên theo ID
+}
 }

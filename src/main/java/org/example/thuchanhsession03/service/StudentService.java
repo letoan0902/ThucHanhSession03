@@ -10,6 +10,16 @@ import java.util.stream.Collectors;
 
 @Service
 public class StudentService {
+
+    // TODO: Inject StudentRepository (dùng @Autowired)
+
+    // ===== UC-01: Danh sách + Sắp xếp =====
+    // TODO: findAll()
+    // TODO: findAllSorted(String sortBy)
+
+    public Student findById(String id) {
+        return studentRepository.findById(id);
+    }
     @Autowired
     private StudentRepository studentRepository;
 

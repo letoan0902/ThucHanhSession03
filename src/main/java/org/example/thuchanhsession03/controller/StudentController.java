@@ -12,6 +12,24 @@ import java.util.List;
 
 @Controller
 public class StudentController {
+
+    @Autowired
+    private StudentService studentService;
+
+    // ===== UC-01 + UC-03: Danh sách + Sắp xếp + Tìm kiếm/Lọc =====
+    // Code của UC-01 sẽ ở đây...
+
+    // ===== UC-02: Chi tiết sinh viên (Phần của bạn) =====
+    @GetMapping("/students/detail")
+    public String getStudentDetail(@RequestParam("id") String id, Model model) {
+        Student student = studentService.findById(id);
+        model.addAttribute("student", student);
+        return "student/detail";
+    }
+
+    // ===== UC-04: Dashboard =====
+    // Code của UC-04 sẽ ở đây...
+}
     @Autowired
     private StudentService studentService;
     // ===== UC-01 + UC-03: Danh sách + Sắp xếp + Tìm kiếm/Lọc =====
