@@ -8,7 +8,7 @@ import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
 @Configuration
 @EnableWebMvc
-@ComponentScan(basePackages = "org.example.thuchanhsession03") //thay đổi cái này
+@ComponentScan(basePackages = "org.example.thuchanhsession03")
 public class AppConfig {
     @Bean
     public InternalResourceViewResolver viewResolver() {

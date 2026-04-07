@@ -5,7 +5,9 @@ import org.example.thuchanhsession03.repository.StudentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * ===== SERVICE: StudentService =====
@@ -49,6 +51,7 @@ import java.util.List;
  */
 @Service
 public class StudentService {
+    public StudentRepository studentRepository;
 
     // TODO: Inject StudentRepository (dùng @Autowired)
 
@@ -65,7 +68,59 @@ public class StudentService {
 
     // ===== UC-04: Dashboard =====
     // TODO: getTotalStudents()
+    public int getTotalStudents() {
+        return studentRepository.findAll().size();
+    }
     // TODO: getAverageGpa()
+    public double getAverageGpa() {
+        List<Student> list = studentRepository.findAll();
+        if (list.isEmpty()) return 0.0;
+
+        double sum = 0;
+        for (Student s : list) {
+            sum += s.getGpa();
+        }
+        return sum / list.size();
+    }
+
     // TODO: getTopStudent()
+    public Student getTopStudent() {
+        List<Student> list = studentRepository.findAll();
+        if (list.isEmpty()) return null;
+
+        Student top = list.get(0);
+        for (Student s : list) {
+            if (s.getGpa() > top.getGpa()) {
+                top = s;
+            }
+        }
+        return top;
+    }
+
+
     // TODO: getStatusCount()
+    public Map<String, Double> getStatusPercentages() {
+        List<Student> studentList = studentRepository.findAll();
+        Map<String, Double> stats = new HashMap<>();
+        if (studentList.isEmpty()){
+            return stats;
+        }
+
+        int total = studentList.size();
+        int active = 0, reserved = 0, graduated = 0;
+        for (Student s : studentList) {
+            switch (s.getStatus()) {
+                case "Đang học": active++; break;
+                case "Bảo lưu": reserved++; break;
+                case "Tốt nghiệp": graduated++; break;
+            }
+        }
+
+        // Tính toán phần trăm
+        stats.put("Active", (active * 100.0) / total);
+        stats.put("Reserved", (reserved * 100.0) / total);
+        stats.put("Graduated", (graduated * 100.0) / total);
+
+        return stats;
+    }
 }

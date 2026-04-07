@@ -5,6 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 /**
@@ -51,7 +53,10 @@ import org.springframework.web.bind.annotation.RequestParam;
  * - Dùng Model model để đẩy dữ liệu: model.addAttribute("key", value).
  */
 @Controller
+@RequestMapping("/")
 public class StudentController {
+    @Autowired
+    private StudentService studentService;
 
     // TODO: Inject StudentService (dùng @Autowired)
 
@@ -61,6 +66,17 @@ public class StudentController {
     // ===== UC-02: Chi tiết sinh viên =====
     // TODO: @GetMapping("/students/detail")
 
+
     // ===== UC-04: Dashboard =====
     // TODO: @GetMapping("/dashboard")
+    @GetMapping("/dashboard")
+    public String showDashboard(Model model) {
+        model.addAttribute("totalStudents", studentService.getTotalStudents());
+        model.addAttribute("averageGpa", studentService.getAverageGpa());
+        model.addAttribute("topStudent", studentService.getTopStudent());
+        model.addAttribute("statusStats", studentService.getStatusPercentages());
+
+        return "dashboard"; // Trả về file dashboard.jsp
+    }
+
 }
